@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+    
+    mysql-exporter:
+        image: prom/mysqld-exporter:v0.12.1
+        container_name: $MYSQL_NAME
+        ports:
+          - $MYSQL_PORT:9104
+        environment:
+          - DATA_SOURCE_NAME="$DATA_SOURCE"

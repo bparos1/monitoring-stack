@@ -1,0 +1,51 @@
+# How often metrics are scraped
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Rules and alerts are read from the specified file
+rule_files:
+  - '$RULES'
+
+# Alerting specifies settings related to AlertManager
+alerting:
+  alertmanagers:
+    - static_configs:
+      - targets: ['$ALERTS_IP']
+      basic_auth:
+        username: $ALERTS_USER
+        password: $ALERTS_PASS
+
+# Reading and writing time sensitive data to Influx_DB server
+remote_write:
+  - url: '$DB_API_URL'
+    basic_auth:
+      username: $DB_USER
+      password: $DB_PASS
+
+remote_read:
+  - url: '$DB_API_URL'
+    basic_auth:
+      username: $DB_USER
+      password: $DB_PASS
+
+# Exporters (targets will be IP addresses of different exporters on a single node)
+scrape_configs:
+  - job_name: '$JOB1_NAME'
+    metrics_path: </path>
+    #scheme: https
+    #tls_config:
+    #  ca_file: <certificate>.crt
+    #basic_auth:
+    #  username: <user>
+    #  password: <password>
+    static_configs:
+      - targets: ['$JOB1_TARGET']
+
+  - job_name: '$JOB2_NAME'
+    static_configs:
+      - targets: ['$JOB2_TARGET1', '$JOB2_TARGET2']
+
+  - job_name: '$JOB3_NAME'
+    static_configs:
+      - targets: ['$JOB3_TARGET1', '$JOB3_TARGET2']

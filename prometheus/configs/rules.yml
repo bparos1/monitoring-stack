@@ -1,0 +1,50 @@
+groups:
+
+- name: AllInstances
+  rules:
+  - alert: InstanceDown
+    expr: up == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: Instance {{ $labels.instance }} potentially down
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute"
+
+  - alert: HostHighCpuLoad
+    expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 90
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: Host has high CPU load (instance {{ $labels.instance }})
+      description: CPU load is > 90%
+
+  - alert: HostOutOfDiskSpace
+    expr: (node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: Host out of disk space (instance {{ $labels.instance }})
+      description: Disk is almost full:\n {{ $value }}\n% left on {{ $labels.mountpoint }}
+
+  - alert: HostOutOfMemory
+    expr: 100 * (node_memory_MemFree_bytes / node_memory_MemTotal_bytes) < 10
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: Host has high memory load (instance {{ $labels.instance }})
+      description: Memory load is > 90%
+
+- name: Containers
+  rules:
+  
+  - alert: ContainerKilled
+    expr: time() - container_last_seen{name=~".+", image!="gcr.io/google-containers/cadvisor:v0.34.0"} > 60
+    labels:
+      severity: critical
+    annotations:
+      summary: Container down on {{ $labels.instance }}
+      description: The container hasn't been seen for at least 1 minutes by cAdvisor

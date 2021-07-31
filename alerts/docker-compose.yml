@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+
+  alert_manager:
+    image: prom/alertmanager:v0.21.0
+    container_name: $ALERT_NAME
+    restart: always
+    ports:
+      - $ALERT_PORT:9093
+    volumes:
+      - $ALERT_CONFIG:/etc/prometheus/alertmanager.yml
+    command:
+      - --config.file=/etc/prometheus/alertmanager.yml
+
+  prom2teams:
+    image: idealista/prom2teams:3.2.1
+    container_name: $PROM_NAME
+    restart: always
+    ports:
+      - $PROM_PORT:8089
+    environment:
+      - PROM2TEAMS_CONNECTOR=$WEBHOOK

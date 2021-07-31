@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+
+    reverseproxy:
+    image: nginx
+    container_name: $PROXY_NAME
+    ports:
+      - $PROXY_PORT:443
+    volumes:
+      - $PROXY_CONFIG:/etc/nginx/nginx.conf
+      - $CERTS:/root/certs
+      - $PASSWORDS:/etc/nginx

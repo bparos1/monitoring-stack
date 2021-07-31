@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.9.0
+    container_name: $POSTGRES_NAME
+    ports:
+      - $POSTGRES_PORT:9187
+    environment:
+      - DATA_SOURCE_NAME="$POSTGRES_DATA_SOURCE"

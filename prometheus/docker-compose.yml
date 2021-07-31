@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.26.0
+    container_name: $NAME
+    ports:
+      - $PORT:9090
+    volumes:
+      - $CONFIG:/etc/prometheus/prometheus.yml
+      - $RULES:/etc/prometheus/rules.yml

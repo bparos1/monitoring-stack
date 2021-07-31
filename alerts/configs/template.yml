@@ -1,0 +1,35 @@
+global:
+  resolve_timeout: 1m
+
+route:
+  receiver: 'prometheus-msteams'
+  group_wait: 30s
+  group_interval: 1m
+  repeat_interval: $ALERT_REPEAT_INTERVAL
+
+
+  routes:
+  - receiver: 'prometheus-msteams'
+    match:
+      severity: critical
+    continue: true
+  - receiver: 'gmail'
+    match:
+      severity: critical
+    continue: true
+
+receivers:
+  - name: 'prometheus-msteams'
+    webhook_configs:
+      - url: '$PROM2TEAMS_IP'
+        send_resolved: true
+
+  - name: 'gmail'
+    email_configs:
+    - to: '$EMAIL_TO'
+      from: $EMAIL_FROM
+      smarthost: $SMART_HOST
+      auth_username: $EMAIL_USER
+      auth_identity: $EMAIL_IDENTITY
+      auth_password: $EMAIL_PASS
+      send_resolved: true

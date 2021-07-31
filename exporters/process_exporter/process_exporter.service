@@ -1,0 +1,12 @@
+[Unit]
+Description=Process Exporter
+After=network-online.target
+
+[Service]
+User=deploy
+Group=deploy
+Type=simple
+ExecStart=/usr/local/bin/process-exporter -threads=false -config.path /etc/process_exporter/process_exporter.yml -web.listen-address=0.0.0.0:9256
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+
+  grafana:
+    image: grafana/grafana:7.5.6
+    container_name: $GRAFANA_NAME
+    restart: always
+    ports:
+      - $GRAFANA_PORT:3000
+    volumes:
+      - $GRAFANA_DATA:/var/lib/grafana
+      - $GRAFANA_CONFIG:/etc/grafana/grafana.ini
+      - $GRAFANA_DASHBOARDS:/etc/grafana/provisioning/datasources
+      - $GRAFANA_DATASOURCE:/etc/grafana/provisioning/dashboards
+      - $GRAFANA_LDAP:/etc/grafana/ldap.toml
+    env_file:
+      - ./configs/grafana.env
